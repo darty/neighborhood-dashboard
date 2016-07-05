@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Neighbourhood Dashboard</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/style.css">
+	<script src="js/sso-variables.js"></script>
+	<script src="js/neighbourhood-dashboard.js"></script>
+	<script src="data/location-data.js"></script>
+	<script src="data/sso/sso-data.js"></script>
+	<script src="data/crimes/category-data.js"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?v=3&key=xxx&callback=initialize&libraries=visualization" async defer></script>
+	<!-- <script src="https://maps.googleapis.com/maps/api/js?key=xxx&signed_in=true&callback=initialize&libraries=visualization" async defer>/script> -->
+	<script>
+	function familyKeyPress(e)
+	{
+		var code = (e.keyCode ? e.keyCode : e.which);
+		if (code == 13) {
+			e.preventDefault();
+			
+			skipToFamily(document.getElementById('family-id').value);
+		}
+	}
+	</script>
+	<script src="js/chart.js/Chart.js"></script>
+  </head>
+  <body>
+	<div id="left-canvas">	
+		<div id="controls-canvas">
+			<input type="number" id="family-id" onkeypress="familyKeyPress(event);"/>
+			<button id="prev-family" onclick="previousFamily();">Previous</button>
+			<button id="next-family" onclick="nextFamily();">Next</button>
+		</div>
+		<div id="data-canvas">
+			<div id="data-menu-canvas">
+				<div id="sso-title" class="data-menu-item-selected" onclick="showData('sso');">SSO Scores</div>
+				<div id="crime-title" class="data-menu-item" onclick="showData('crime');">Crime Data</div>
+				<div id="poi-title" class="data-menu-item" onclick="showData('poi');">POI Data</div>
+			</div>
+			<div id="data-content-canvas">
+				<div id="sso-content" class="data-content-item"></div>
+				<div id="crime-content" class="data-content-item-hidden"></div>
+				<div id="poi-content" class="data-content-item-hidden"></div>
+			</div>
+		</div>
+	</div>
+    <div id="map-canvas">
+		<div id="map-content"></div>
+		<div id="legend"></div>
+		<div id="map-controls">
+			<div class="section group">
+				<div class="col span_1_of_4"><button id="toggle-street" onclick="toggleStreet();">Toggle Street</button></div>
+				<div class="col span_1_of_4"><button id="toggle-heatmap" onclick="toggleHeatmap();">Toggle Heatmap</button></div>
+				<div class="col span_1_of_4"><button id="toggle-neighbourhood" onclick="toggleNeighbourhood();">Toggle Neighbourhood</button></div>
+				<div class="col span_1_of_4"><button id="toggle-pois" onclick="togglePOIs();">Toggle POIs</button></div>
+			</div>
+			<div class="section group">
+				<div class="col span_1_of_4"></div>
+				<div class="col span_1_of_4"><button id="toggle-local-heatmap" onclick="toggleLocalHeatmap();">Toggle Local Heatmap</button></div>
+				<div class="col span_1_of_4"></div>
+				<div class="col span_1_of_4"><button id="toggle-all-pois" onclick="toggleAllPOIs();">Toggle All POIs</button></div>
+			</div>
+		</div>
+		<div id="detection-content"></div>
+	</div>
+  </body>
+</html>
