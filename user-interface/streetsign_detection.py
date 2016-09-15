@@ -59,7 +59,7 @@ def detectStreetsigns(family, point_data, streetview_output_folder):
     family_dir = os.path.join(streetview_output_folder, family)
     result = {}
     point_count = 0
-    for point,heading_data in point_data:
+    for point, heading_data in point_data:
         result[point_count] = {'point' : point, 'images': [], 'detections': [], 'features': []}
         for fname in heading_data:
             result[point_count]['images'].append(os.path.join(family, fname))
@@ -76,7 +76,8 @@ def detectStreetsigns(family, point_data, streetview_output_folder):
                 for x in range(ws,w-ws,int(8*scalefactor)):
                     for y in range(hs,h-hs,int(8*scalefactor)):
                         if x+ws <= w and y+hs <= h:
-                            p = clf.predict_proba(getFeatures(img_resize[y:y+hs,x:x+ws]))[0][1]
+                            feat = getFeatures(img_resize[y:y+hs,x:x+ws])
+                            p = clf.predict_proba(feat.reshape(1,-1))[0][1]
                             if p >= 0.9999999999:
                                 x1=x*(1./scalefactor)
                                 y1=y*(1./scalefactor)
