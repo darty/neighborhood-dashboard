@@ -22,28 +22,6 @@ category_data = {}
 urbanicity_data = {}
 
 
-def printUsage():
-    print '###########################################################################################################'
-    print os.path.dirname(os.path.realpath('__file__')), '-l <coordinatesfile> -s <sso_clean_file> -o <outputfolder> -y <year> -k -n'
-    print '###########################################################################################################'
-    print 'Arguments:'
-    print '-h: Show this help'
-    print '-l <filename>: Name of the coordinates file. Has to be a csv file with cols [familyid, latitude, longitude]'
-    print '-s <filename>: Name of the SSO file. Has to be a csv file with variable cols (required col is familyid)'
-    print '-o <folder>: Output folder where to put the results. Preferably html/data'
-    print '-y <year>: Year to request the crimedata.'
-    print '-k: Create the KML files containing the locations and headings per family.'
-    print '-n: Do not perform any fake requests.'
-    print '###########################################################################################################'
-    print 'Example for trunked dataset:'
-    # print os.path.basename(__file__), '-l A12-XY-trunked.csv -s SSOclean-trunked.csv -o html/data -y 2012 -k -n'
-    print os.path.dirname(os.path.realpath('__file__')), '-l A12-XY-trunked.csv -s SSOclean-trunked.csv -o html/data -y 2012 -k -n'
-    print 'Example for complete dataset:'
-    # print os.path.basename(__file__), '-l A12-XY.csv -s SSOclean.csv -o html/data -y 2012 -k -n'
-    print os.path.dirname(os.path.realpath('__file__')), '-l A12-XY.csv -s SSOclean.csv -o html/data -y 2012 -k -n'
-    print '###########################################################################################################'
-
-
 def writeObject(varname, data, folder, filename, callback=''):
     if not os.path.exists(folder):
         os.makedirs(folder)
@@ -198,6 +176,29 @@ def runPreprocessing(coordinatesfile, ssocleanfile, urbanicityfile, outputfolder
                 osmroad.writeFamilyKmlPoints(family, family_point_data, kml_output_folder)
                 osmroad.writeRoadKmlPoints(family, road_data, kml_road_output_folder)
         writeFamilyData(family, lat, lon, police_data, road_data, detection_data, data_output_folder)
+
+def printUsage():
+    print '###########################################################################################################'
+    print os.path.dirname(os.path.realpath('__file__')), '-l <coordinatesfile> -s <sso_clean_file> -o <outputfolder> -y <year> -k -n'
+    print '###########################################################################################################'
+    print 'Arguments:'
+    print '-h: Show this help'
+    print '-l <filename>: Name of the coordinates file. Has to be a csv file with cols [familyid, latitude, longitude]'
+    print '-s <filename>: Name of the SSO file. Has to be a csv file with variable cols (required col is familyid)'
+    print '-o <folder>: Output folder where to put the results. Preferably html/data'
+    print '-y <year>: Year to request the crimedata.'
+    print '-k: Generate KML files containing the locations and headings per family.'
+    print '-n: Do not perform any fake requests.'
+    print '###########################################################################################################'
+    print 'Example for trunked dataset:'
+    # print os.path.basename(__file__), '-l A12-XY-trunked.csv -s SSOclean-trunked.csv -o html/data -y 2012 -k -n'
+    print os.path.dirname(os.path.realpath('__file__')), '-l A12-XY-trunked.csv -s SSOclean-trunked.csv -o html/data -y 2012 -k -n'
+    print 'Example for complete dataset:'
+    # print os.path.basename(__file__), '-l A12-XY.csv -s SSOclean.csv -o html/data -y 2012 -k -n'
+    print os.path.dirname(os.path.realpath('__file__')), '-l A12-XY.csv -s SSOclean.csv -o html/data -y 2012 -k -n'
+    print '###########################################################################################################'
+
+
 
 
 if __name__ == "__main__":
