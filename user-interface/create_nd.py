@@ -1,6 +1,14 @@
+# Installed:
+# geopy
+#   anaconda search -t conda geopy
+#   conda install -c topper geopy
+# cv2
+#   conda install -c https://conda.binstar.org/menpo opencv
+
 import sys
 import getopt
 import neighborhood_dashboard
+
 
 
 def printUsage():

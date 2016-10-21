@@ -10,7 +10,7 @@ from common import *
 import familydata
 import policedata
 import osmroad
-import streetsign_detection
+#import streetsign_detection
 import urbanicitydata
 
 
@@ -179,14 +179,14 @@ class NeighborhoodDashboard:
             roadfile = os.path.join(roadfolder, 'road-data-' + str(family) + '.js')
 
             detection_data = None
-            if os.path.isfile(roadfile) and streetsign_detection.checkDetectionDone(family,
-                                                                                    self.streetview_output_folder):
+            if os.path.isfile(roadfile): #and streetsign_detection.checkDetectionDone(family,
+                                                                                    #self.streetview_output_folder):
                 print 'Skipping road data for %s' % family
             else:
                 family_point_data = osmroad.determineRoadPoints(family, road_data)
-                if streetview_detection == 1:
-                    detection_data = streetsign_detection.determineStreetSigns(family, family_point_data,
-                                                                                    self.streetview_output_folder)
+                #if streetview_detection == 1:
+                #    detection_data = streetsign_detection.determineStreetSigns(family, family_point_data,
+                 #                                                                   self.streetview_output_folder)
                 if road_points == 1:
                     osmroad.writeFamilyKmlPoints(family, family_point_data, self.kml_output_folder)
                     osmroad.writeRoadKmlPoints(family, road_data, self.kml_road_output_folder)

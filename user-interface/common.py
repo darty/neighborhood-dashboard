@@ -5,7 +5,7 @@ import random
 import math
 import csv
 
-from common_private import *
+#from common_private import *
 
 #GSV_KEY = ""
 
