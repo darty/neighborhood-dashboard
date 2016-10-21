@@ -8,6 +8,7 @@
 	<script src="js/sso-variables.js"></script>
 	<script src="js/neighbourhood-dashboard.js"></script>
 	<script src="data/location-data.js"></script>
+	<script src="data/generic-data.js"></script>
 	<script src="data/sso/sso-data.js"></script>
 	<script src="data/crimes/category-data.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?v=3&callback=initialize&libraries=visualization" async defer></script>
@@ -33,12 +34,14 @@
 		</div>
 		<div id="data-canvas">
 			<div id="data-menu-canvas">
-				<div id="sso-title" class="data-menu-item-selected" onclick="showData('sso');">SSO Scores</div>
+				<div id="generic-title" class="data-menu-item-selected" onclick="showData('generic');">Generic</div>
+				<div id="sso-title" class="data-menu-item" onclick="showData('sso');">SSO Scores</div>
 				<div id="crime-title" class="data-menu-item" onclick="showData('crime');">Crime Data</div>
 				<div id="poi-title" class="data-menu-item" onclick="showData('poi');">POI Data</div>
 			</div>
 			<div id="data-content-canvas">
-				<div id="sso-content" class="data-content-item"></div>
+				<div id="generic-content" class="data-content-item"></div>
+				<div id="sso-content" class="data-content-item-hidden"></div>
 				<div id="crime-content" class="data-content-item-hidden"></div>
 				<div id="poi-content" class="data-content-item-hidden"></div>
 			</div>

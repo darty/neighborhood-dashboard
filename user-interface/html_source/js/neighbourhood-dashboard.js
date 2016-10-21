@@ -28,9 +28,9 @@ var poisAllVisible = false;
 
 var infowindow = null;
 
-var MONTHS = ['januari', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+var MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
 // List to show/hide selected data
-var contentIds = ["sso", "crime", "poi"];
+var contentIds = ["generic", "sso", "crime", "poi"];
 
 var pie_colors = [
 {color: '#8dd3c7', highlight: "#56beac"},
@@ -746,6 +746,47 @@ function loadDetectionCallback(data)
 	}
 }
 
+function loadGeneric(familyId)
+{
+	contentDiv = document.getElementById('generic-content');
+	contentDiv.innerHTML = '';
+	
+	var genericList = document.createElement('ul');
+	// genericList.setAttribute('class', 'data-table');
+	
+	var idElement = document.createElement('li');
+	idElement.innerHTML = "Id: " + familyId;
+	genericList.appendChild(idElement);
+	
+	var locationElement = document.createElement('li');
+	locationElement.innerHTML = "Location: " + GENERIC_DATA[familyId]["latitude"] + "," + GENERIC_DATA[familyId]["longitude"];
+	genericList.appendChild(locationElement);
+	
+	var addressElement = document.createElement('li');
+	addressElement.innerHTML = "Address: " + GENERIC_DATA[familyId]["address"];
+	genericList.appendChild(addressElement);
+	
+	if (typeof GENERIC_DATA[familyId]["walkability"] !== 'undefined')
+	{
+		var walkabilityElement = document.createElement('li');
+		
+		var linkWalkscore = document.createElement('a');
+		linkWalkscore.setAttribute('href', GENERIC_DATA[familyId]["walkability"]["ws_link"]);
+		linkWalkscore.innerHTML = GENERIC_DATA[familyId]["walkability"]["walkscore"] + ":" + GENERIC_DATA[familyId]["walkability"]["description"];
+		
+		var imgWalkscore = document.createElement('img');
+		imgWalkscore.setAttribute('src', 'https://pp.walk.sc/badge/walk/score/' + GENERIC_DATA[familyId]["walkability"]["walkscore"] + '.svg');
+		linkWalkscore.appendChild(imgWalkscore);
+		
+		// ws_link
+		// <img src="//cdn2.walk.sc/2/images/api-logo.png" alt="What's your Walk Score?" width="120" height="19" border="0" data-pin-nopin="true">
+		
+		genericList.appendChild(linkWalkscore);
+	}
+	
+	contentDiv.appendChild(genericList);
+}
+
 function loadSSO(familyId)
 {
 	contentDiv = document.getElementById('sso-content');
@@ -969,6 +1010,8 @@ function loadCurrentFamily()
 	marker.setTitle(currentId);
 	
     map.panTo(marker.getPosition());
+	
+	loadGeneric(currentId);
 	
 	loadSSO(currentId);
 	

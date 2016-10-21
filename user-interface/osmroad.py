@@ -2,6 +2,8 @@ from osm_common import *
 from common import *
 from geopy.distance import vincenty
 
+MAX_LENGTH = 200.0 # meters
+
 WANTED_HIGHWAY_TAGS = [
     'motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'unclassified', 'residential', 'service',
     'motorway_link', 'trunk_link', 'primary_link', 'secondary_link', 'tertiary_link',
@@ -9,11 +11,11 @@ WANTED_HIGHWAY_TAGS = [
     'road', 'construction'
 ]
 
+
 def calculateDistance(p1, p2):
-    #print "Reversed", p1, p2
     distance = vincenty(reversed(p1), reversed(p2)).meters
-    #print p1[::-1], p2[::-1], distance
     return distance
+
 
 def calculateLength(points):
     if len(points) <= 1:
@@ -26,30 +28,24 @@ def calculateLength(points):
         p1 = p2
     return result
 
+
 def calculateSegmentLengths(segments):
     result = 0.0
     for segment in segments:
         result+= calculateDistance(segment[0], segment[1])
-    # result = 0
-    # s1 = segments[0]
-    # #for segment in segments:
-    # for i in range(1, len(segments)):
-    #     s2 = segments[i]
-    #     result += calculateDistance(s1, s2)
-    #     s1 = s2
     return result
 
-MAX_LENGTH = 200.0 # meters
 
 def calculateCloserPoint(p1, p2, percentage):
-    #print p1, p2, percentage
     pointx = p1[0] + (p2[0] - p1[0]) * percentage
     pointy = p1[1] + (p2[1] - p1[1]) * percentage
     result = [pointx, pointy]
     return result
 
+
 def isclose(a, b, rel_tol=1e-09, abs_tol=0.0):
     return abs(a-b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
+
 
 def shortenSegment(points, middle_point, length_over, length_left, length_right, max_length):
     # if length_left == length_right:
@@ -57,40 +53,30 @@ def shortenSegment(points, middle_point, length_over, length_left, length_right,
         # shorten both with length_over / 2
         point_left = calculateCloserPoint(middle_point, points[0], ((max_length/2)) / length_left)
         point_right = calculateCloserPoint(middle_point, points[1], ((max_length/2)) / length_right)
-        print "Both", [point_left, point_right]
+        #print "Both", [point_left, point_right]
         return [point_left, point_right]
     elif length_left > length_right:
         # shorten left with length_left - length_right
         noemer = (length_left - length_over)
-        # noemer = length_right
-        # if length_right > length_left:
-        #     noemer = (max_length - length_right)
         point_left = calculateCloserPoint(middle_point, points[0], noemer / length_left)
-        print "Left", [point_left, points[1]]
+        #print "Left", [point_left, points[1]]
         return [point_left, points[1]]
     else: #  length_left < length_right:
         # shorten_right with length_right - length_left
         noemer = (length_right - length_over)
-        # noemer = length_left
-        # if length_left > length_right:
-        #     noemer = (max_length - length_left)
         point_right = calculateCloserPoint(middle_point, points[1], noemer / length_right)
-        print "Right", [points[0], point_right]
+        #print "Right", [points[0], point_right]
         return [points[0], point_right]
 
 def minimizeRoads(points, segment_part, segment_point):
     # filter out identical points
     filtered_list = []
-
     for point in points:
         if not point in filtered_list:
             filtered_list.append(point)
         else:
             print "Filtered out double location"
-
     points = filtered_list
-
-
     current_length = calculateLength(points)
     if current_length > MAX_LENGTH:
         print "Recalculating road, old length", current_length
@@ -109,16 +95,12 @@ def minimizeRoads(points, segment_part, segment_point):
                 current_segment = [point1, point2]
                 if not over_middle:
                     if current_segment != segment_part:
-                        #print "Left ", current_segment
                         left.append(current_segment)
                     else:
-                        #print "Left ", [point1, segment_point]
                         left.append([point1, segment_point])
-                        #print "Right ", [segment_point, point2]
                         right.append([segment_point, point2])
                         over_middle = True
                 else:
-                    #print "Right ", current_segment
                     right.append(current_segment)
                 point1 = point2
                 i += 1
@@ -153,7 +135,6 @@ def minimizeRoads(points, segment_part, segment_point):
         current_length = calculateLength(points)
         if isclose(current_length, MAX_LENGTH):
             break
-
     print "New length", current_length
     return points
 
@@ -184,50 +165,6 @@ def retrieveClosestRoad(roads, lat, lon):
             point1 = point2
     if closestRoad == -1:
         return {}
-    #
-    # # shortestDistance
-    # # shortestSegment
-    # closest_road = roads[closestRoad]
-    # closest_road_points = closest_road['points']
-    # segment_point = [lat, lon]
-    # if shortestDistance != 0.0:
-    #     segment_point = determinePointOnSegment(lat, lon, shortestSegment)
-    #
-    # before = []
-    # after = []
-    # passed = False
-    # point1 = closest_road_points[0]
-    # total_length = 0.0
-    # length_before = 0.0
-    # length_after = 0.0
-    # for point in closest_road_points[1::]:
-    #     point2 = point
-    #     current_length = vincenty(point1, point2).meters
-    #     if shortestSegment == [point1, point2]:
-    #         before.append([point1, segment_point])
-    #         after.append([segment_point, point2])
-    #         length_before += vincenty(point1, segment_point).meters
-    #         length_after += vincenty(segment_point, point2).meters
-    #         passed = True
-    #     else:
-    #         if not passed:
-    #             before.append([point1, point2])
-    #             length_before += current_length
-    #         else:
-    #             after.append([point1, point2])
-    #             length_after += current_length
-    #     total_length += current_length
-    #
-    # while total_length > 200.0:
-    #     if length_before > length_after:
-    #         shorten_part(before.reverse(), 200.0 - length_after)
-    #         before.reverse()
-    #     else:
-    #         shorten_part(after, 200.0 - length_before)
-    #     calculateLength(before, length_before)
-    #     calculateLength(after, length_after)
-    #     total_length = length_before + length_after
-
     result = roads[closestRoad]
     segment = { 'distance': shortestDistance, 'points': shortestSegment }
     if shortestDistance == 0.0:
@@ -237,6 +174,7 @@ def retrieveClosestRoad(roads, lat, lon):
     result['segment'] = segment
     result['points'] = minimizeRoads(result['points'], shortestSegment, segment['segment-point'])
     return result
+
 
 def retrievePointOnRoad(roads, point):
     shortestSegment = []
@@ -259,6 +197,7 @@ def retrievePointOnRoad(roads, point):
         return point
     else:
         return determinePointOnSegment(vectA[0], vectA[1], shortestSegment)
+
 
 def writeRoadKmlPoints(familyid, road_data, output_folder):
     if not os.path.exists(output_folder):
@@ -284,6 +223,7 @@ def writeRoadKmlPoints(familyid, road_data, output_folder):
     f.write("</Document>\n")
     f.write("</kml>\n")
     f.close()
+
 
 def writeFamilyKmlPoints(familyid, point_data, kml_output_folder):
     if not os.path.exists(kml_output_folder):
@@ -333,9 +273,6 @@ def determineRoadPoints(family, road_data):
     ]
     return family_point_data
 
-# def writeRoadPoints(family, road_data):
-#     family_point_data = determineRoadPoints(family, road_data)
-#     writeFamilyKmlPoints(family, family_point_data)
 
 def retrieveFamilyRoads(family, lat, lon, random_locations, osm_output_folder):
     # If already downloaded OSM data, just parse that and continue
@@ -365,44 +302,6 @@ def retrieveFamilyRoads(family, lat, lon, random_locations, osm_output_folder):
     result['closest_pois'] = processPoisDistances(result['pois'], lat, lon)
     return result
 
-# def retrieveFamilyRoads(family, lat, lon, random_locations, osm_output_folder):
-#     result = {}
-#     # If already downloaded OSM data, just parse that and continue
-#     if checkOsmExists(family, lat, lon, osm_output_folder):
-#         polygon = determinePolygon(lat, lon)
-#         data = readOsm(str(family) + '.osm', osm_output_folder)
-#         roads = parseOsm(data)
-#         result['roads'] = retrieveClosestRoad(roads, lat, lon)
-#         result['pois'] = parsePois(data, polygon)
-#         result['closest_pois'] = processPoisDistances(result['pois'], lat, lon)
-#         return result
-#     # Else start the random/real OSM download sequence
-#     random.seed()
-#     family_done = False
-#     active = True
-#     while active:
-#         rnd = random.randint(0, FAKE_REQUESTS_COUNT)
-#         if rnd > 0 and len(random_locations) > 0:
-#             # rnd location
-#             fake_location = random_locations.pop(random.randint(0, len(random_locations) - 1))
-#             print 'Fake OSM request %s' % (fake_location)
-#             downloadOsm(None, fake_location[0], fake_location[1], osm_output_folder)
-#         elif not family_done:
-#             # actual location
-#             result['roads'] = {}
-#             result['pois'] = {}
-#             polygon = determinePolygon(lat, lon)
-#             print 'Processing Roads for %s at location (%s,%s)'% (family, lat, lon)
-#             downloadOsm(str(family) + '.osm', lat, lon, osm_output_folder)
-#             data = readOsm(str(family) + '.osm', osm_output_folder)
-#             roads = parseOsm(data)
-#             result['roads'] = retrieveClosestRoad(roads, lat, lon)
-#             result['pois'] = parsePois(data, polygon)
-#             result['closest_pois'] = processPoisDistances(result['pois'], lat, lon)
-#             family_done = True
-#         if family_done and len(random_locations) == 0:
-#             active = False
-#     return result
 
 def writeClosestPoiHeadersToCsv(csvfolder, poi_filename):
     if not os.path.exists(csvfolder):

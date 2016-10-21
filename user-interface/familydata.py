@@ -57,24 +57,6 @@ def readCstrengths(cstrengthsfile):
                 print 'Not an integer %s' % (familyid)
     return sso_data
 
-# LOCATION DATA #
-# def readCoordinates(coordinatesfile):
-#     location_data = {}
-#     printHeadline('Reading Family coordinate information from %s' % (coordinatesfile))
-#     with open(coordinatesfile, 'r') as csvfile:
-#         familyreader = csv.reader(csvfile, delimiter=',')
-#         for id, lat, lon in familyreader:
-#             if lat and lon:
-#                 try:
-#                     int(id)
-#                     point = {}
-#                     point["latitude"] = lat
-#                     point["longitude"] = lon
-#                     location_data[id] = point
-#                 except ValueError:
-#                     print 'Not an integer %s' % (id)
-#     return location_data
-
 
 def readCoordinates(coordinatesfile):
     location_data = {}

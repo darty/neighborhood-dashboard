@@ -13,6 +13,9 @@ import osmroad
 #import streetsign_detection
 import urbanicitydata
 
+import api_geocode
+import api_walkability
+
 
 def writeObject(varname, data, folder, filename, callback=''):
     if not os.path.exists(folder):
@@ -38,6 +41,11 @@ def writeCommonFiles(location_data, sso_data, category_data, outputfolder):
         writeObject('CATEGORY_DATA', category_data, policefolder, 'category-data.js')
 
 
+def writeGenericFile(generic_data, outputfolder):
+    if generic_data:
+        writeObject('GENERIC_DATA', generic_data, outputfolder, 'generic-data.js')
+
+
 def writeFamilyData(family, lat, lon, police_data, road_data, detection_data, outputfolder):
     if police_data:
         policefolder = os.path.join(outputfolder, POLICE_PATH)
@@ -58,6 +66,10 @@ class NeighborhoodDashboard:
         self.config = ConfigParser.RawConfigParser(allow_no_value=True)
         self.config.read(config_file)
 
+        self.walkability_key = self.get_secure_config('api-keys', 'walkability', None)
+        self.perform_walkability = self.walkability_key is not None and not (self.walkability_key == 'None')
+
+        self.generic_data = {}
         self.location_data = {}
         self.sso_data = {}
         self.category_data = {}
@@ -105,6 +117,20 @@ class NeighborhoodDashboard:
         self.year_setting = self.config.getint('settings', 'year')
         self.category_data = policedata.requestCrimeCategories(self.year_setting)
 
+
+    def process_generic_data(self, family, lat, lon):
+        print "Processing generic data for %s" % family
+        data = {}
+        data['latitude'] = lat
+        data['longitude'] = lon
+        data['address'] = api_geocode.reverse_geocode(lat, lon)
+        if self.perform_walkability:
+            walkability_score = api_walkability.request_walkability(lat, lon, self.walkability_key)
+            if not walkability_score is None:
+                data['walkability'] = walkability_score
+        print data
+        return data
+
     def run_preprocessing(self):
         printHeadline('Preprocessing ...')
 
@@ -131,6 +157,7 @@ class NeighborhoodDashboard:
 
         streetview_detection = self.get_secure_config('settings', 'streetview-detection', DEFAULT_STREETVIEW_DETECTION)
         road_points = self.get_secure_config('debug', 'generate-kml', DEFAULT_ROAD_POINTS)
+
 
         counter = 0
         for family in self.location_data:
@@ -192,3 +219,6 @@ class NeighborhoodDashboard:
                     osmroad.writeRoadKmlPoints(family, road_data, self.kml_road_output_folder)
             writeFamilyData(family, lat, lon, police_data, road_data, detection_data, self.data_output_folder)
 
+            self.generic_data[family] = self.process_generic_data(family, lat, lon)
+
+        writeGenericFile(self.generic_data, self.data_output_folder)

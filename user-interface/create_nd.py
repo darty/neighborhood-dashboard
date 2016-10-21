@@ -1,9 +1,11 @@
 # Installed:
 # geopy
 #   anaconda search -t conda geopy
-#   conda install -c topper geopy
+#   conda install -c IOOS geopy
 # cv2
 #   conda install -c https://conda.binstar.org/menpo opencv
+# py2exe
+#   conda install -c PeterParker py2exe
 
 import sys
 import getopt
