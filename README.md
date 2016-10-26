@@ -1,4 +1,8 @@
-# neighborhood-dashboard
+# Neighborhood Dashboard
+
+# About
+
+The Neighborhood Dashboard (ND) is an open tool developed by researchers from Hasselt University (Belgium) and Duke University (USA) to quickly collect and aggregate spatial data (for example volunteered geographic information (VGI) or open geospatial data through any API or platform) around different point of interests (POIs) (e.g. home locations of subjects from social science research). The collected data can be viewed and inspected in any web browser and later used for further analysis. This document is a quick start guide to help users to install and to use the software.
 
 ## Pre-compiled Binaries
 
