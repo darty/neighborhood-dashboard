@@ -12,3 +12,12 @@ Pe-compiled binaries for Windows 10 and Windows 7 can be found on the following 
 
 [Windows 7](http://81.7.15.7/~donald/nd/prebuild-windows7-21-10-2016.zip)
 
+## Getting Started
+
+### Configuration
+
+In order to configure the ND, you have to rename the file 'config_example.cfg' to 'config.cfg' and edit it according to your needs.
+
+### Running the Neighborhood Dashboard
+
+The Neighborhood Dashboard can be run using either one of the pre-compiled binaries or directly running the python scripts.
