@@ -167,7 +167,7 @@ class NeighborhoodDashboard:
             urbanicity_fieldnames = urbanicitydata.writeUrbanicityHeadersToCsv(self.csvfolder, 'urbanicity_data.csv')
 
         fake_count = 0
-        if self.get_secure_config('settings', 'fake-requests', DEFAULT_FAKE_REQUESTS) == 1:
+        if self.get_secure_config('settings', 'fake-requests', DEFAULT_FAKE_REQUESTS) == '1':
             fake_count = self.get_secure_config('settings', 'fake-requests-count', DEFAULT_FAKE_REQUESTS_COUNT)
 
         streetview_detection = self.get_secure_config('settings', 'streetview-detection', DEFAULT_STREETVIEW_DETECTION)
