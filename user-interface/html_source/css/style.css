@@ -63,6 +63,28 @@ div, tr, td, th {
     height: auto;
 }
 
+.generic-table {
+	list-style: none;
+}
+
+.generic-table-key {
+	padding:6px;
+	font-weight: bold;
+	display: block;
+}
+
+.generic-table-value {
+	padding: 6px;
+	display: block;
+}
+
+.generic-table-value-img {
+}
+
+.generic-table-value-text {
+	
+}
+
 .data-table {
 	border: 1px solid #808080;
 	width: 100%;

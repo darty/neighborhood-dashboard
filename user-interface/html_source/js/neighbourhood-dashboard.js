@@ -746,42 +746,132 @@ function loadDetectionCallback(data)
 	}
 }
 
+function addWalkabilityMap(lat, lon, element)
+{
+	var map = new google.maps.Map(
+	  element,
+	  {
+		mapTypeId : google.maps.MapTypeId.ROADMAP,
+		center    : new google.maps.LatLng(lat, lon),
+		zoom      : 13
+	  }
+	);
+	var widget = new walkscore.TravelTimeWidget({
+	  map    : map,
+	  origin : lat + ',' + lon,
+	  show   : true,
+	  mode   : walkscore.TravelTime.Mode.DRIVE
+	});
+}
+
 function loadGeneric(familyId)
 {
 	contentDiv = document.getElementById('generic-content');
 	contentDiv.innerHTML = '';
 	
 	var genericList = document.createElement('ul');
-	// genericList.setAttribute('class', 'data-table');
+	genericList.setAttribute('class', 'generic-table');
 	
 	var idElement = document.createElement('li');
-	idElement.innerHTML = "Id: " + familyId;
+	idElement.setAttribute('class', 'generic-table-key');
+	idElement.innerHTML = "" + familyId;
 	genericList.appendChild(idElement);
 	
+	var locationTitleElement = document.createElement('li');
+	locationTitleElement.setAttribute('class', 'generic-table-key');
+	locationTitleElement.innerHTML = "Coordinates: ";
+	genericList.appendChild(locationTitleElement);
+	
 	var locationElement = document.createElement('li');
-	locationElement.innerHTML = "Location: " + GENERIC_DATA[familyId]["latitude"] + "," + GENERIC_DATA[familyId]["longitude"];
+	locationElement.setAttribute('class', 'generic-table-value');
+	locationElement.innerHTML = GENERIC_DATA[familyId]["latitude"] + "," + GENERIC_DATA[familyId]["longitude"];
 	genericList.appendChild(locationElement);
 	
+	var addressTitleElement = document.createElement('li');
+	addressTitleElement.setAttribute('class', 'generic-table-key');
+	addressTitleElement.innerHTML = "Reverse Geocoding: ";
+	genericList.appendChild(addressTitleElement);
+	
 	var addressElement = document.createElement('li');
-	addressElement.innerHTML = "Address: " + GENERIC_DATA[familyId]["address"];
+	addressElement.setAttribute('class', 'generic-table-value');
+	addressElement.innerHTML = GENERIC_DATA[familyId]["address"];
 	genericList.appendChild(addressElement);
 	
-	if (typeof GENERIC_DATA[familyId]["walkability"] !== 'undefined')
+	if (typeof GENERIC_DATA[familyId]["ws_link"] !== 'undefined')
 	{
-		var walkabilityElement = document.createElement('li');
+		var walkTitleElement = document.createElement('li');
+		walkTitleElement.setAttribute('class', 'generic-table-key');
+		walkTitleElement.innerHTML = "Walkability: ";
+		genericList.appendChild(walkTitleElement);
 		
+		
+		var walkabilityElement = document.createElement('li');
+		walkabilityElement.setAttribute('class', 'generic-table-value');
+		
+		
+		var linkWalkscore = document.createElement('a');
+		linkWalkscore.setAttribute('href', GENERIC_DATA[familyId]["ws_link"]);
+		linkWalkscore.setAttribute('class', 'generic-table-value-img');
+		var imgWalkscore = document.createElement('img');
+		imgWalkscore.setAttribute('src', 'https://pp.walk.sc/badge/walk/score/' + GENERIC_DATA[familyId]["ws_walkscore"] + '.svg');
+		linkWalkscore.appendChild(imgWalkscore);
+		walkabilityElement.appendChild(linkWalkscore);
+		
+		var descWalkscore = document.createElement('p');
+		descWalkscore.setAttribute('class', 'generic-table-value-text');
+		descWalkscore.innerHTML = "Walkscore: " + GENERIC_DATA[familyId]["ws_walkscore"] + ", " + GENERIC_DATA[familyId]["ws_description"];
+		walkabilityElement.appendChild(descWalkscore);
+		
+		genericList.appendChild(walkabilityElement);
+	}
+	
+	if (typeof GENERIC_DATA[familyId]["ts_link"] !== 'undefined')
+	{	
+		genericList.appendChild(document.createElement('p'));
+		var walkTitleElement = document.createElement('li');
+		walkTitleElement.setAttribute('class', 'generic-table-key');
+		walkTitleElement.innerHTML = "Transit Score: ";
+		genericList.appendChild(walkTitleElement);
+		
+		var transitElement = document.createElement('li');
+		transitElement.setAttribute('class', 'generic-table-value');
+		
+		
+		var linkTransitscore = document.createElement('a');
+		linkTransitscore.setAttribute('href', GENERIC_DATA[familyId]["ts_link"]);
+		linkTransitscore.setAttribute('class', 'generic-table-value-img');
+		var imgTransitscore = document.createElement('img');
+		imgTransitscore.setAttribute('src', 'https://pp.walk.sc/badge/transit/score/' + GENERIC_DATA[familyId]["ts_transitscore"] + '.svg');
+		linkTransitscore.appendChild(imgTransitscore);
+		transitElement.appendChild(linkTransitscore);
+		
+		var descTransitscore = document.createElement('p');
+		descTransitscore.setAttribute('class', 'generic-table-value-text');
+		descTransitscore.innerHTML = "Transit: " + GENERIC_DATA[familyId]["ts_transitscore"] + ", " + GENERIC_DATA[familyId]["ts_description"] + ", " + GENERIC_DATA[familyId]["ts_summary"];
+		transitElement.appendChild(descTransitscore);
+		
+		genericList.appendChild(transitElement);
+		
+		/*
+		var walkDivElement = document.createElement('div');
+		
+		var walkabilityElement = document.createElement('li');
+		walkabilityElement.setAttribute('class', 'generic-table-value-float');
+		var imgWalkscore = document.createElement('img');
+		imgWalkscore.setAttribute('src', 'https://pp.walk.sc/badge/walk/score/' + GENERIC_DATA[familyId]["walkability"]["walkscore"] + '.svg');
+		walkabilityElement.appendChild(imgWalkscore);
+		walkDivElement.appendChild(walkabilityElement);
+		
+		var walkabilityLinkElement = document.createElement('li');
+		walkabilityLinkElement.setAttribute('class', 'generic-table-value');
 		var linkWalkscore = document.createElement('a');
 		linkWalkscore.setAttribute('href', GENERIC_DATA[familyId]["walkability"]["ws_link"]);
 		linkWalkscore.innerHTML = GENERIC_DATA[familyId]["walkability"]["walkscore"] + ":" + GENERIC_DATA[familyId]["walkability"]["description"];
+		walkabilityLinkElement.appendChild(linkWalkscore);
+		walkDivElement.appendChild(walkabilityLinkElement);
+		*/
 		
-		var imgWalkscore = document.createElement('img');
-		imgWalkscore.setAttribute('src', 'https://pp.walk.sc/badge/walk/score/' + GENERIC_DATA[familyId]["walkability"]["walkscore"] + '.svg');
-		linkWalkscore.appendChild(imgWalkscore);
 		
-		// ws_link
-		// <img src="//cdn2.walk.sc/2/images/api-logo.png" alt="What's your Walk Score?" width="120" height="19" border="0" data-pin-nopin="true">
-		
-		genericList.appendChild(linkWalkscore);
 	}
 	
 	contentDiv.appendChild(genericList);

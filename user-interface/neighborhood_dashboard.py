@@ -10,7 +10,11 @@ from common import *
 import familydata
 import policedata
 import osmroad
-#import streetsign_detection
+# Py2Exe disable
+#'''''
+import streetsign_detection
+#'''''
+# Py2Exe disable end
 import urbanicitydata
 
 import api_geocode
@@ -121,14 +125,23 @@ class NeighborhoodDashboard:
     def process_generic_data(self, family, lat, lon):
         print "Processing generic data for %s" % family
         data = {}
+        data['family_id'] = family
         data['latitude'] = lat
         data['longitude'] = lon
-        data['address'] = api_geocode.reverse_geocode(lat, lon)
+        revgeo = api_geocode.reverse_geocode(lat, lon)
+        data['address'] = revgeo.address
         if self.perform_walkability:
             walkability_score = api_walkability.request_walkability(lat, lon, self.walkability_key)
             if not walkability_score is None:
-                data['walkability'] = walkability_score
-        print data
+                data['ws_walkscore'] = walkability_score['walkscore']
+                data['ws_description'] = walkability_score['description']
+                data['ws_link'] = walkability_score['ws_link']
+            transit_score = api_walkability.request_transit_score(lat, lon, revgeo.raw, self.walkability_key)
+            if not transit_score is None:
+                data['ts_transitscore'] = walkability_score['transit_score']
+                data['ts_description'] = walkability_score['description']
+                data['ts_summary'] = walkability_score['summary']
+                data['ts_link'] = walkability_score['ws_link']
         return data
 
     def run_preprocessing(self):
@@ -147,6 +160,8 @@ class NeighborhoodDashboard:
 
         policedata.writePoliceHeadersToCsv(self.csvfolder, 'police_crime_data.csv', 'police_stop_and_search_data.csv')
         osmroad.writeClosestPoiHeadersToCsv(self.csvfolder, 'closest_poi_data.csv')
+        api_walkability.writeWalkabilityHeadersToCsv(self.csvfolder, 'walkability_data.csv')
+
         urbanicity_fieldnames = []
         if process_urbanicity:
             urbanicity_fieldnames = urbanicitydata.writeUrbanicityHeadersToCsv(self.csvfolder, 'urbanicity_data.csv')
@@ -158,6 +173,9 @@ class NeighborhoodDashboard:
         streetview_detection = self.get_secure_config('settings', 'streetview-detection', DEFAULT_STREETVIEW_DETECTION)
         road_points = self.get_secure_config('debug', 'generate-kml', DEFAULT_ROAD_POINTS)
 
+        gsv_api_key = self.get_secure_config('api-keys', 'gsv', DEFAULT_GSV_KEY)
+        if gsv_api_key is None:
+            streetview_detection = 0
 
         counter = 0
         for family in self.location_data:
@@ -206,19 +224,33 @@ class NeighborhoodDashboard:
             roadfile = os.path.join(roadfolder, 'road-data-' + str(family) + '.js')
 
             detection_data = None
-            if os.path.isfile(roadfile): #and streetsign_detection.checkDetectionDone(family,
-                                                                                    #self.streetview_output_folder):
-                print 'Skipping road data for %s' % family
+
+            detection_done = True
+            # Py2Exe disable
+            # ''''
+            detection_done = streetsign_detection.checkDetectionDone(family, self.streetview_output_folder)
+            # '''''
+            # Py2Exe disable end
+            if os.path.isfile(roadfile) and detection_done:
+                    print 'Skipping road data for %s' % family
             else:
                 family_point_data = osmroad.determineRoadPoints(family, road_data)
-                #if streetview_detection == 1:
-                #    detection_data = streetsign_detection.determineStreetSigns(family, family_point_data,
-                 #                                                                   self.streetview_output_folder)
+
+                # Py2Exe disable
+                #''''
+                if streetview_detection == '1':
+                    detection_data = streetsign_detection.determineStreetSigns(family, family_point_data,
+                                                                                    self.streetview_output_folder, gsv_api_key)
+                #'''''
+                # Py2Exe disable end
+
                 if road_points == 1:
                     osmroad.writeFamilyKmlPoints(family, family_point_data, self.kml_output_folder)
                     osmroad.writeRoadKmlPoints(family, road_data, self.kml_road_output_folder)
             writeFamilyData(family, lat, lon, police_data, road_data, detection_data, self.data_output_folder)
 
             self.generic_data[family] = self.process_generic_data(family, lat, lon)
+            api_walkability.writeWalkabilityDictionaryToCsv(self.generic_data[family], self.csvfolder, 'walkability_data.csv')
 
+        print self.generic_data
         writeGenericFile(self.generic_data, self.data_output_folder)

@@ -25,7 +25,7 @@ def getFeatures(imgunsized):
     hog_image = hog(img, orientations=8, pixels_per_cell=(16, 16),cells_per_block=(1, 1))
     return hog_image
 
-def getImagesFromGSV(family, family_road_data, streetview_output_folder):
+def getImagesFromGSV(family, family_road_data, streetview_output_folder, GSV_KEY):
     if not os.path.exists(streetview_output_folder):
         os.makedirs(streetview_output_folder)
     family_dir = os.path.join(streetview_output_folder, family)
@@ -138,9 +138,9 @@ def detectStreetsigns(family, point_data, streetview_output_folder):
         point_count += 1
     return result
 
-def determineStreetSigns(family, family_point_data, streetview_output_folder):
+def determineStreetSigns(family, family_point_data, streetview_output_folder, GSV_KEY):
     print 'Determining Street Signs for %s' % (family)
-    data = getImagesFromGSV(family, family_point_data, streetview_output_folder)
+    data = getImagesFromGSV(family, family_point_data, streetview_output_folder, GSV_KEY)
     result = detectStreetsigns(family, data, streetview_output_folder)
     print result
     return result

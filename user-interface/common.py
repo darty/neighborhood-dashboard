@@ -13,6 +13,7 @@ DEFAULT_OUTPUT_FOLDER = 'output'
 DEFAULT_FAKE_REQUESTS = False
 DEFAULT_FAKE_REQUESTS_COUNT = 9
 DEFAULT_STREETVIEW_DETECTION = 1
+DEFAULT_GSV_KEY = None
 DEFAULT_ROAD_POINTS = 1
 
 HTML_SOURCE_FOLDER = "./html_source"
@@ -88,6 +89,9 @@ CSV_CLOSEST_POI_FIELDNAMES = [ 'family_id', 'latitude', 'longitude', 'poi_classi
 CSV_URBANICITY_VARIABLES = ['park', 'pitch', 'playground', 'dog_park', 'garden', 'golf_course', 'recreation_ground', 'village_green', 'forest', 'farmland', 'grass', 'meadow']
 
 CSV_URBANICITY_POI_FIELDNAMES = ['familyid', 'density', 'PerGreen', 'numGreen', 'SCIIurban3', 'PopDensity']
+
+
+CSV_WALKABILITY_FIELDNAMES = ['family_id', 'latitude', 'longitude', 'ws_walkscore', 'ws_link', 'ws_description', 'ts_transitscore']
 
 # OSM_POI_CATEGORIES = {
 #     "Leisure" : ["park", "pitch ", "playground ", "sports_centre", "swimming_pool", "swimming_area", "water_park", "track", "bandstand", "dog_park", "garden", "golf_course"],
@@ -327,7 +331,7 @@ def initCSV(filepath, headers):
 def appendCSV(data, filepath, headers):
     with open(filepath, 'ab') as csvfile:
         try:
-            writer = csv.DictWriter(csvfile, fieldnames=headers)
+            writer = csv.DictWriter(csvfile, fieldnames=headers, extrasaction='ignore')
             if isinstance(data, dict):
                 writer.writerow(data)
             else:
