@@ -16,7 +16,28 @@ Pe-compiled binaries for Windows 10 and Windows 7 can be found on the following 
 
 ### Configuration
 
-In order to configure the ND, you have to rename the file 'config_example.cfg' to 'config.cfg' and edit it according to your needs.
+In order to configure the ND, you have to rename the file 'config_example.cfg' to 'config.cfg' and edit it according to your needs. The following is an example of a configuration. Please note that the API-keys for Google StreetView and the Walkability API have been replaced by `xx`.
+
+```
+[files]
+location = ../input/family_locations.csv
+sso = ../input/sso_variables.csv
+urbanicity = ../input/urbanicity.csv
+
+[settings]
+year = 2012
+output-directory = ../output/html
+fake-requests = 1
+fake-requests-count = 9
+streetview-detection = 1
+
+[api-keys]
+gsv = xxx
+walkability = xx
+
+[debug]
+generate-kml = 1
+```
 
 ### Running the Neighborhood Dashboard
 
