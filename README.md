@@ -42,3 +42,6 @@ generate-kml = 1
 ### Running the Neighborhood Dashboard
 
 The Neighborhood Dashboard can be run using either one of the pre-compiled binaries or directly running the python scripts.
+
+### Browsing the output
+
