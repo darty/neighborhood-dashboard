@@ -32,7 +32,7 @@ fake-requests-count = 9
 streetview-detection = 1
 
 [api-keys]
-gsv = xxx
+gsv = xx
 walkability = xx
 
 [debug]
