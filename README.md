@@ -14,6 +14,10 @@ Pe-compiled binaries for Windows 10 and Windows 7 can be found on the following 
 
 ## Getting Started
 
+Please find the manual for the Neighborhood Dashboard on the following link:
+
+[ND Manual](http://81.7.15.7/~donald/nd/Tutorial_NBDashboard_v5.pdf)
+
 ### Configuration
 
 In order to configure the ND, you have to rename the file 'config_example.cfg' to 'config.cfg' and edit it according to your needs. The following is an example of a configuration. Please note that the API-keys for Google StreetView and the Walkability API have been replaced by `xx`.
