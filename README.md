@@ -2,7 +2,12 @@
 
 # About
 
-The Neighborhood Dashboard (ND) is an open tool developed by researchers from Hasselt University (Belgium) and Duke University (USA) to quickly collect and aggregate spatial data (for example volunteered geographic information (VGI) or open geospatial data through any API or platform) around different point of interests (POIs) (e.g. home locations of subjects from social science research). The collected data can be viewed and inspected in any web browser and later used for further analysis. This document is a quick start guide to help users to install and to use the software.
+![Neighborhood Dashboard](https://github.com/darty/neighborhood-dashboard/blob/master/main.jpg "Neighborhood Dashboard")
+
+The Neighborhood Dashboard (ND) is an open tool used to quickly collect and aggregate spatial data including Open Street Map data, volunteered geographic information (VGI) or open geospatial data through any standard API or platform around different point of interests (POIs) (e.g. home locations of subjects from social science research). The collected data can be viewed and inspected in a web browser and exported for further analysis. The ND, an open-source tool, is freely available online and is being used by research teams to capture key features of the neighborhoods where children and adolescents in longitudinal and intervention-based studies live and attend school. Ideally, this tool will help place valuable data into the hands of researchers, community members and policy-makers who are trying to understand and improve the health of local communities and children.
+
+Neighborhood Dashboard: An Open Tool for Child Health and Neighborhood Researchers
+*Donald Degraen, Joy R. Piontak, Candice L. Odgers, Johannes Schöning
 
 ## Pre-compiled Binaries
 
